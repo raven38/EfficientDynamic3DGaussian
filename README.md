@@ -1,6 +1,14 @@
 # EfficientDynamic3DGaussians
 This repository contains the code for the paper An Efficient 3D Gaussian Representation for Monocular/Multi-view Dynamic Scenes  https://arxiv.org/abs/2311.12897
 
+![Example](https://raw.githubusercontent.com/raven38/EfficientDynamic3DGaussian/main/assets/example.gif)
+
+For the actual frame rate.
+
+
+
+https://github.com/raven38/EfficientDynamic3DGaussian/assets/4375159/7195c8d8-4a61-4d8f-b7d9-1fc90e5779ea
+
 
 ## Overview
 
