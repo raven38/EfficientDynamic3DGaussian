@@ -228,7 +228,8 @@ def render_flow(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Ten
     focal_x = int(viewpoint_camera.image_width) / (2.0 * tanfovx)
     tx, ty, tz = viewpoint_camera.world_view_transform[3, :3]
     viewmatrix = viewpoint_camera.world_view_transform.cuda()
-    t = means3D * viewmatrix[0, :3]  + means3D * viewmatrix[1, :3] + means3D * viewmatrix[2, :3] + viewmatrix[3, :3]
+    # amended by MobiusLqm
+    t = torch.matmul(means3D, viewmatrix[:3, :3]) + viewmatrix[3, :3]    
     t = t.detach()
     flow[:, 0] = flow[:, 0] * focal_x / t[:, 2]  + flow[:, 2] * -(focal_x * t[:, 0]) / (t[:, 2]*t[:, 2])
     flow[:, 1] = flow[:, 1] * focal_y / t[:, 2]  + flow[:, 2] * -(focal_y * t[:, 1]) / (t[:, 2]*t[:, 2])
