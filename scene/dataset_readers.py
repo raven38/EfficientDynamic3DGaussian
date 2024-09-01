@@ -264,7 +264,7 @@ def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, durati
         xyz = xyz[:, None, :]
         xyz = np.concatenate([xyz, np.zeros((xyz.shape[0], 10, 3))], axis=1)
         xyz = np.concatenate([xyz, xyz, xyz, xyz], axis=1)
-        assert xyz.shape[0] == rgb.shape[0]  
+        assert xyz.shape[0] == rgb.shape[0]
         storePly(totalply_path, xyz, rgb)
     try:
         pcd = fetchPly(totalply_path)
@@ -400,9 +400,13 @@ def readColmapSceneInfo(path, images, eval, llffhold=8):
         print("Converting point3d.bin to .ply, will happen only the first time you open the scene.")
         try:
             xyz, rgb, _ = read_points3D_binary(bin_path)
+
         except:
             xyz, rgb, _ = read_points3D_text(txt_path)
         xyz = xyz[:, None, :]
+        xyz = np.concatenate([xyz, np.zeros((xyz.shape[0], 10, 3))], axis=1)
+        xyz = np.concatenate([xyz, xyz, xyz, xyz], axis=1)
+        assert xyz.shape[0] == rgb.shape[0]  
         storePly(ply_path, xyz, rgb)
     try:
         pcd = fetchPly(ply_path)
