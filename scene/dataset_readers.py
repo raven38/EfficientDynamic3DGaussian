@@ -146,32 +146,6 @@ def getNerfppNorm(cam_info):
 
 def readColmapCameras2(cam_extrinsics, cam_intrinsics, images_folder, near=0.1, far=10, startime=0, duration=300):
     cam_infos = []
-    # pose in llff. pipeline by hypereel 
-    originnumpy = os.path.join(os.path.dirname(os.path.dirname(images_folder)), "poses_bounds.npy")
-    images_folder = os.path.dirname(os.path.dirname(images_folder)).replace('colmap_', '')
-    with open(originnumpy, 'rb') as numpy_file:
-        poses_bounds = np.load(numpy_file)
-
-        poses = poses_bounds[:, :15].reshape(-1, 3, 5)
-        bounds = poses_bounds[:, -2:]
-
-        near = bounds.min() * 0.95
-        far = bounds.max() * 1.05
-        
-        poses = poses_bounds[:, :15].reshape(-1, 3, 5) # 19, 3, 5
-
-        H, W, focal = poses[0, :, -1]
-
-        cx, cy = W / 2.0, H / 2.0
-
-        K = np.eye(3)
-        K[0, 0] = focal * W / W / 2.0
-        K[0, 2] = cx * W / W / 2.0
-        K[1, 1] = focal * H / H / 2.0
-        K[1, 2] = cy * H / H / 2.0
-        
-        imageH = int (H//2) # note hard coded to half of the original image size
-        imageW = int (W//2)
       
     totalcamname = []
     for idx, key in enumerate(cam_extrinsics): # first is cam20_ so we strictly sort by camera name
@@ -214,15 +188,12 @@ def readColmapCameras2(cam_extrinsics, cam_intrinsics, images_folder, near=0.1, 
        
         for j in range(startime, startime+ int(duration)):
             image_path = os.path.join(images_folder, os.path.basename(extr.name))
-            image_path = os.path.join(images_folder, os.path.basename(extr.name).split('.')[0], f'{j+1:03d}.png')
             image_name = os.path.basename(image_path).split(".")[0]
-            print(image_path)
             image_path = image_path.replace("colmap_"+str(startime), "colmap_{}".format(j), 1)
             assert os.path.exists(image_path), "Image {} does not exist!".format(image_path)
             image = Image.open(image_path) # .resize((width, height))
             if j == startime:
                 cam_info = CameraInfo(uid=uid, R=R, T=T, FovY=FovY, FovX=FovX, image=image, image_path=image_path, image_name=image_name, width=width, height=height, time=(j-startime)/duration)
-
             else:
                 cam_info = CameraInfo(uid=uid, R=R, T=T, FovY=FovY, FovX=FovX, image=image, image_path=image_path, image_name=image_name, width=width, height=height, time=(j-startime)/duration)
             cam_infos.append(cam_info)
@@ -230,7 +201,7 @@ def readColmapCameras2(cam_extrinsics, cam_intrinsics, images_folder, near=0.1, 
     return cam_infos
 
 
-def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, duration=1200):
+def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, duration=60):
     try:
         cameras_extrinsic_file = os.path.join(path, "sparse/0", "images.bin")
         cameras_intrinsic_file = os.path.join(path, "sparse/0", "cameras.bin")
@@ -285,8 +256,6 @@ def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, durati
     txt_path = os.path.join(path, "sparse/0/points3D.txt")
     totalply_path = os.path.join(path, "sparse/0/points3D_total" + str(duration) + ".ply")
     
-
-    
     if not os.path.exists(totalply_path):
         print("Converting point3d.bin to .ply, will happen only the first time you open the scene.")
         thisbin_path = os.path.join(path, "sparse/0/points3D.bin").replace("colmap_"+ str(starttime), "colmap_" + str(starttime), 1)
@@ -314,6 +283,7 @@ def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, durati
 
 def readColmapCameras(cam_extrinsics, cam_intrinsics, images_folder):
     cam_infos = []
+    time_length = len(cam_extrinsics)
     for idx, key in enumerate(cam_extrinsics):
         sys.stdout.write('\r')
         # the exact output you're looking for:
@@ -346,7 +316,7 @@ def readColmapCameras(cam_extrinsics, cam_intrinsics, images_folder):
         image = Image.open(image_path)
 
         cam_info = CameraInfo(uid=uid, R=R, T=T, FovY=FovY, FovX=FovX, image=image,
-                              image_path=image_path, image_name=image_name, width=width, height=height, time=0)
+                              image_path=image_path, image_name=image_name, width=width, height=height, time=idx/time_length)
         cam_infos.append(cam_info)
     sys.stdout.write('\n')
     return cam_infos
