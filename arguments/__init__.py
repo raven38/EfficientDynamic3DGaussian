@@ -51,7 +51,7 @@ class ModelParams(ParamGroup):
         self._model_path = ""
         self._images = "images"
         self._resolution = -1
-        self._white_background = True
+        self._white_background = False
         self.approx_l = 2
         self.data_device = "cuda"
         self.eval = True
