@@ -305,6 +305,7 @@ def readColmapSceneInfo2(path, images, eval, llffhold=8, multiview=False, durati
     scene_info = SceneInfo(point_cloud=pcd,
                            train_cameras=train_cam_infos,
                            test_cameras=test_cam_infos,
+                           val_cameras=test_cam_infos,
                            nerf_normalization=nerf_normalization,
                            ply_path=totalply_path,
                            vis_cameras=test_cam_infos,
