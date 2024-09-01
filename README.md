@@ -2,7 +2,7 @@
 This repository contains the code for the paper An Efficient 3D Gaussian Representation for Monocular/Multi-view Dynamic Scenes  
 [arXiv](https://arxiv.org/abs/2311.12897)
 [Project page](https://compactdynamic3dgaussian.github.io/)
-
+[Evaluation Images](https://drive.google.com/drive/folders/1m4K2j-RiXnivb8jhLdVggacztK0sPAfu?usp=drive_link)
 
 ![Example](https://raw.githubusercontent.com/raven38/EfficientDynamic3DGaussian/main/assets/example.gif)
 
